@@ -62,15 +62,20 @@ public class Network {
      *  If any of the two names is not a user in this network,
      *  or if the "follows" addition failed for some reason, returns false. */
     public boolean addFollowee(String name1, String name2) {
-        if (getUser(name1) == null || getUser(name2) == null) {
-            return false;
-        }
-        User u1 = getUser(name1);
-        if(u1.addFollowee(name2)) {
-            return true;
-        }
+    // הוספת הבדיקה: משתמש לא יכול לעקוב אחרי עצמו
+    if (name1 == null || name2 == null || name1.equals(name2)) {
         return false;
     }
+    
+    User u1 = getUser(name1);
+    User u2 = getUser(name2);
+    
+    if (u1 == null || u2 == null) {
+        return false;
+    }
+    
+    return u1.addFollowee(name2);
+}
     
     /** For the user with the given name, recommends another user to follow. The recommended user is
      *  the user that has the maximal mutual number of followees as the user with the given name. */
@@ -125,10 +130,11 @@ public class Network {
 
     // Returns a textual description of all the users in this network, and who they follow.
     public String toString() {
-        String s = "Network: \n";
-       for (int i = 0; i < userCount; i++) {
-            s += users[i].toString() + "\n";
+        String s = "Network:";
+        for (int i = 0; i < userCount; i++) {
+            // מוסיפים ירידת שורה לפני כל משתמש
+            s += "\n" + users[i].toString();
         }
-       return s;
+        return s;
     }
 }
